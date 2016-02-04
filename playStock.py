@@ -9,19 +9,22 @@
 
 import re
 
-# Assuming there are no empty lines in the input file, this should work
 prices = open('test', 'r').read()
-print(prices)
 priceList = re.split('\n| ', prices)
-print(priceList)
 
-lowest = highest = priceList[0]
+# Remove empty character elements
+priceList = [x for x in priceList if x != '']
 
-# Found this useful for loop on stack exchange for iterating two
-# elements at a time. See
-# http://stackoverflow.com/a/5389578 for specific answer.
-# prices[0::2] means create subset collection of elements that
-# index % 2 == 0. Zip then creates a tuple collection from both
-# sets.
-for i,k in zip(priceList[0::2], priceList[1::2]):
-    print(i, k)
+# delta is the max difference between prices
+delta = float(priceList[1]) - float(priceList[0])
+
+# i is the index of the price for buying. j must be two ahead of i
+# because we can't buy and sell within one tick.
+for i in range(len(priceList)):
+    for j in range(i+2, len(priceList)):
+        if float(priceList[j]) - float(priceList[i]) > delta:
+            delta = float(priceList[j]) - float(priceList[i])
+            low = priceList[i]
+            high = priceList[j]
+
+print(low, high)
